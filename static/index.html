@@ -1,0 +1,129 @@
+<!doctype html5>
+<html>
+  <head>
+    <title>/autopreview</title>
+    <style type="text/css">
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+#box {
+  width: 60%;
+  margin: 2em auto;
+  border: 1px #ccc solid;
+}
+
+#header {
+  border-bottom: 1px #ccc solid;
+  background: #efefef;
+  margin: 0;
+  padding: 0.5em;
+  font-family: monospace;
+}
+
+#header-title {
+  margin: 0;
+  padding: 0;
+  float: left;
+}
+
+#header-time {
+  font-size: 9pt;
+  font-weight: normal;
+  font-style: italic;
+  margin: 0.5em 0 0 0;
+  padding: 0;
+  float: right;
+}
+
+#header br {
+  clear: both;
+}
+
+#path {
+  font-family: monospace;
+  margin-bottom: 0;
+}
+
+#listing {
+  font-family: monospace;
+  list-style: none;
+  margin: 0 1em;
+  padding: 1em 0 0.5em 1em;
+  border-left: 1px #ccc solid;
+}
+
+#listing li {
+  font-size: 10pt;
+}
+
+#contents {
+  padding: 1em 2em;
+  font-size: 12pt;
+  line-height: 1.5em;
+  text-align: justify;
+}
+
+#contents > h1 {
+  border-bottom: 1px #efefef solid;
+  padding-bottom: 0.25em;
+}
+
+#contents > h2 {
+  margin-top: 1.5em;
+}
+
+#contents li > p {
+  margin: 0;
+}
+
+#contents p > code {
+  font-size: 10pt;
+  background: #efefef;
+  padding: 2px 3px;
+}
+
+#contents pre {
+  font-size: 9pt;
+  line-height: 1.25em;
+  background: #efefef;
+  padding: 1em;
+}
+    </style>
+    <script type="text/javascript">
+function connect() {
+  var ws = new WebSocket('ws://localhost:5555/api');
+  ws.onmessage = function(msg) {
+    var data = JSON.parse(msg.data);
+		document.title = data.title;
+    document.getElementById('header-title').innerHTML = data.title;
+    document.getElementById('header-time').innerHTML = new Date(data.received_at);
+    document.getElementById('contents').innerHTML = data.contents;
+  };
+  ws.onclose = function(e) {
+    console.log('Lost connection; will reconnect in 1s...');
+    setTimeout(function() { connect(); }, 1000);
+  };
+  ws.onerror = function(e) {
+    ws.close();
+  };
+  return ws;
+}
+
+window.onload = connect;
+    </script>
+  </head>
+  <body>
+    <div id="box">
+      <h1 id="header">
+        <p id="header-title"></p>
+        <p id="header-time"></p>
+        <br />
+      </h1>
+      <div id="contents"></div>
+    </div>
+  </body>
+</html>
+

@@ -1,0 +1,4 @@
+*.swp
+/server/bin
+/server/pkg
+/server/src/server/static.go
