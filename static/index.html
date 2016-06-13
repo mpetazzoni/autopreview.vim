@@ -10,7 +10,7 @@ html, body {
 }
 
 #box {
-  width: 60%;
+  width: 80%;
   margin: 2em auto;
   border: 1px #ccc solid;
 }
@@ -23,23 +23,12 @@ html, body {
   font-family: monospace;
 }
 
-#header-title {
+#status {
+  padding: 0.5em 1em;
   margin: 0;
-  padding: 0;
-  float: left;
-}
-
-#header-time {
-  font-size: 9pt;
-  font-weight: normal;
-  font-style: italic;
-  margin: 0.5em 0 0 0;
-  padding: 0;
-  float: right;
-}
-
-#header br {
-  clear: both;
+  border-bottom: 1px #ccc solid;
+  color: #888;
+  font-size: 8pt;
 }
 
 #path {
@@ -90,23 +79,35 @@ html, body {
   line-height: 1.25em;
   background: #efefef;
   padding: 1em;
+  overflow: auto;
 }
     </style>
     <script type="text/javascript">
+var server = 'ws://localhost:5555/api';
+
+function log(msg) {
+  console.log(msg);
+  document.getElementById('status').innerHTML = msg;
+}
+
 function connect() {
-  var ws = new WebSocket('ws://localhost:5555/api');
+  log('Connecting to Autopreview server ' + server + ' ...');
+  var ws = new WebSocket(server);
   ws.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
 		document.title = data.title;
-    document.getElementById('header-title').innerHTML = data.title;
-    document.getElementById('header-time').innerHTML = new Date(data.received_at);
+    document.getElementById('header').innerHTML = data.title;
     document.getElementById('contents').innerHTML = data.contents;
+    log('Connected; last update on ' + new Date(data.received_at) + '.');
   };
   ws.onclose = function(e) {
-    console.log('Lost connection; will reconnect in 1s...');
+    log('Lost connection; will reconnect in 1s...');
     setTimeout(function() { connect(); }, 1000);
   };
   ws.onerror = function(e) {
+    ws.close();
+  };
+  window.onbeforeunload = function() {
     ws.close();
   };
   return ws;
@@ -118,10 +119,8 @@ window.onload = connect;
   <body>
     <div id="box">
       <h1 id="header">
-        <p id="header-title"></p>
-        <p id="header-time"></p>
-        <br />
       </h1>
+      <p id="status"></p>
       <div id="contents"></div>
     </div>
   </body>
