@@ -50,7 +50,7 @@ function! s:refresh()
         \ json#encode(data))
 endfunction
 
-function! s:autopreview()
+function! autopreview#autopreview()
   augroup autopreview
     if g:autopreview_slow_refresh
       au BufEnter,BufWinEnter,BufWrite,CursorHoldI <buffer> call s:refresh()
@@ -63,18 +63,15 @@ function! s:autopreview()
   call s:refresh()
 endfunction
 
-function! s:cleanup()
-  call s:stop()
-  au! autopreview * <buffer>
-endfunction
-
-function! autopreview#autopreview()
-  call s:autopreview()
+function! autopreview#open_browser()
+  call system('open ' . g:autopreview_server_url)
 endfunction
 
 function! autopreview#stop()
   call s:stop()
+  au! autopreview * <buffer>
 endfunction
 
 command! -nargs=0 AutoPreview call autopreview#autopreview()
-command! -nargs=0 StopAutoPreview call autopreview#stop()
+command! -nargs=0 AutoPreviewOpen call autopreview#open_browser()
+command! -nargs=0 AutoPreviewStop call autopreview#stop()

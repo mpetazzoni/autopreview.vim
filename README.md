@@ -22,6 +22,8 @@ $ make
 
 ## Usage
 
+### `:AutoPreview`
+
 To enable the live preview, simply call `:Autopreview` in your buffer.
 For best results, make sure you do that in a Markdown buffer :-) You
 should see a message in Vim's message window with the URL to open in
@@ -37,6 +39,17 @@ file, add the following line to your Vimrc:
 ```viml
 au BufNewFile,BufEnter *.md call autopreview#autopreview()
 ```
+
+### `:AutoPreviewOpen`
+
+Opens a new tab or window in your web browser pointing at the
+Autopreview server to see the live preview (by executing `open
+g:autopreview_server_url`).
+
+### `:AutoPreviewStop`
+
+Manually stops the Autopreview server. Vim will also automatically stop
+the Autopreview server when exiting.
 
 ## Configuration
 
