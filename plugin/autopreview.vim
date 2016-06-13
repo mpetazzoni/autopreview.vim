@@ -30,14 +30,6 @@ function! s:stop()
 endfunction
 
 function! s:refresh()
-  if !exists('b:changedticklast')
-    let b:changedticklast = b:changedtick
-  elseif b:changedtick == b:changedticklast
-    return
-  endif
-
-  let b:changedticklast = b:changedtick
-
   let bufnr = expand('<bufnr>')
   let data = {
         \ 'title': expand('%:t'),
@@ -50,12 +42,21 @@ function! s:refresh()
         \ json#encode(data))
 endfunction
 
+function! s:throttled_refresh()
+  if !exists('b:changedticklast')
+    let b:changedticklast = b:changedtick
+  elseif b:changedtick != b:changedticklast
+    let b:changedticklast = b:changedtick
+    call s:refresh()
+  endif
+endfunction
+
 function! autopreview#autopreview()
   augroup autopreview
     if g:autopreview_slow_refresh
-      au BufEnter,BufWinEnter,BufWrite,CursorHoldI <buffer> call s:refresh()
+      au BufEnter,BufWinEnter,BufWrite,CursorHoldI <buffer> call s:throttled_refresh()
     else
-      au BufEnter,BufWinEnter,BufWrite,InsertLeave,CursorHold,CursorHoldI,CursorMoved,CursorMovedI <buffer> call s:refresh()
+      au BufEnter,BufWinEnter,BufWrite,InsertLeave,CursorHold,CursorHoldI,CursorMoved,CursorMovedI <buffer> call s:throttled_refresh()
     endif
     au VimLeave <buffer> call s:stop()
   augroup END
