@@ -26,6 +26,7 @@ endfunction
 
 function! s:stop()
   call system('curl -XDELETE ' . g:autopreview_server_url . ' &>/dev/null &')
+  redraw | echo 'Stopped Autopreview server.'
 endfunction
 
 function! s:refresh()
@@ -54,7 +55,7 @@ function! s:autopreview()
     if g:autopreview_slow_refresh
       au BufEnter,BufWinEnter,BufWrite,CursorHoldI <buffer> call s:refresh()
     else
-      au BufEnter,BufWinEnter,BufWrite,InsertLeave,CursorMoved,CursorMovedI <buffer> call s:refresh()
+      au BufEnter,BufWinEnter,BufWrite,InsertLeave,CursorHold,CursorHoldI,CursorMoved,CursorMovedI <buffer> call s:refresh()
     endif
     au VimLeave <buffer> call s:cleanup()
   augroup END
@@ -71,4 +72,9 @@ function! autopreview#autopreview()
   call s:autopreview()
 endfunction
 
+function! autopreview#stop()
+  call s:stop()
+endfunction
+
 command! -nargs=0 AutoPreview call autopreview#autopreview()
+command! -nargs=0 StopAutoPreview call autopreview#stop()
