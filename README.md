@@ -11,20 +11,13 @@ then sends it down to the web page.
 ## Installation
 
 The Autopreview server component is written in Go and is built with
-[`gb`](https://getgb.io). If you don't have `gb`, you can install it
-with:
-
-```
-$ go get github.com/constabulary/gb/...
-```
-
-Then, to install the plugin and build the server (assuming you use
-Pathogen):
+[`gb`](https://getgb.io). The plugin comes with a Makefile to help you
+get `gb` and build the Autopreview server.
 
 ```
 $ git clone https://github.com/mpetazzoni/autopreview.vim ~/.vim/bundle/
-$ cd ~/.vim/bundle/autopreview.vim/server/
-$ gb build
+$ cd ~/.vim/bundle/autopreview.vim/
+$ make
 ```
 
 ## Usage
