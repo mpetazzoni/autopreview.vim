@@ -31,6 +31,30 @@ html, body {
   font-size: 8pt;
 }
 
+@keyframes info_fade {
+  from { background-color: azure; }
+  to { background-color: none; }
+}
+#status.info {
+  animation: info_fade 2s ease-out;
+}
+
+@keyframes good_fade {
+  from { background-color: greenyellow; }
+  to { background-color: none; }
+}
+#status.good {
+  animation: good_fade 2s ease-out;
+}
+
+@keyframes bad_fade {
+  from { background-color: pink; }
+  to { background-color: none; }
+}
+#status.bad {
+  animation: bad_fade 2s ease-out;
+}
+
 #path {
   font-family: monospace;
   margin-bottom: 0;
@@ -90,23 +114,24 @@ html, body {
     <script type="text/javascript">
 var server = 'ws://localhost:5555/api';
 
-function log(msg) {
+function log(cls, msg) {
   console.log(msg);
+  document.getElementById('status').className = cls;
   document.getElementById('status').innerHTML = msg;
 }
 
 function connect() {
-  log('Connecting to Autopreview server ' + server + ' ...');
+  log('info', 'Connecting to Autopreview server ' + server + ' ...');
   var ws = new WebSocket(server);
   ws.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
 		document.title = data.title;
     document.getElementById('header').innerHTML = data.title;
     document.getElementById('contents').innerHTML = data.contents;
-    log('Connected; last update on ' + new Date(data.received_at) + '.');
+    log('good', 'Connected; last update on ' + new Date(data.received_at) + '.');
   };
   ws.onclose = function(e) {
-    log('Lost connection; will reconnect in 1s...');
+    log('bad', 'Lost connection; will reconnect in 1s...');
     setTimeout(function() { connect(); }, 1000);
   };
   ws.onerror = function(e) {
