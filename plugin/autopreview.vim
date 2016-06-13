@@ -57,7 +57,7 @@ function! s:autopreview()
     else
       au BufEnter,BufWinEnter,BufWrite,InsertLeave,CursorHold,CursorHoldI,CursorMoved,CursorMovedI <buffer> call s:refresh()
     endif
-    au VimLeave <buffer> call s:cleanup()
+    au VimLeave <buffer> call s:stop()
   augroup END
   call s:start()
   call s:refresh()
