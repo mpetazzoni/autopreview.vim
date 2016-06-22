@@ -13,6 +13,10 @@ if !exists('g:autopreview_server_url')
   let g:autopreview_server_url = 'http://localhost:5555/'
 endif
 
+if !exists('g:autopreview_timeout')
+  let g:autopreview_timeout = 1
+endif
+
 if !exists('g:autopreview_server_path')
   let g:autopreview_server_path =
     \ escape(expand('<sfile>:p:h'), '\') .
@@ -38,6 +42,7 @@ function! s:refresh()
         \ }
   call system(
         \ 'curl -XPUT -HContent-Type:application/json -T - ' .
+        \ '-m ' . g:autopreview_timeout . ' ' .
         \ g:autopreview_server_url . ' &>/dev/null &',
         \ json#encode(data))
 endfunction

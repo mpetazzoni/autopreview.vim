@@ -73,3 +73,9 @@ which is also the default value for this configuration parameter.
 
 Overrides the path to the server's executable. Defaults to `<plugin
 path>/../server/server`.
+
+### `g:autopreview_timeout`
+
+Overrides the timeout (in seconds) used when making requests to the
+Autopreview server -- either to push new buffer contents or to stop the
+server. Defaults to 1 second.
