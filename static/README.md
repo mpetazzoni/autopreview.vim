@@ -13,6 +13,6 @@ After encoding, you need to rebuild the server code.
 
 ```
 $ ./encode index < index.html > ../server/src/server/static.go
-$ cd ..
+$ cd ../server
 $ gb build
 ```
