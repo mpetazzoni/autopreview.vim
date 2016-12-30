@@ -1,4 +1,4 @@
-<!doctype html5>
+<!DOCTYPE html>
 <html>
   <head>
     <title>/autopreview</title>
@@ -6,29 +6,21 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 #box {
-  width: 80%;
+  width: 65%;
   margin: 2em auto;
   border: 1px #ccc solid;
-}
-
-#header {
-  border-bottom: 1px #ccc solid;
-  background: #efefef;
-  margin: 0;
-  padding: 0.5em;
-  font-family: monospace;
 }
 
 #status {
   padding: 0.5em 1em;
   margin: 0;
-  border-bottom: 1px #ccc solid;
+  border-top: 1px #ccc solid;
   color: #888;
   font-size: 8pt;
+  font-family: monospace;
 }
 
 @keyframes info_fade {
@@ -77,6 +69,7 @@ html, body {
   font-size: 12pt;
   line-height: 1.5em;
   text-align: justify;
+  font-family: Palatino, Helvetica, sans-serif;
 }
 
 #contents > h1 {
@@ -95,6 +88,7 @@ html, body {
 #contents code {
   background: #efefef;
   padding: 2px 3px;
+  font-size: smaller;
 }
 
 #contents pre {
@@ -109,6 +103,10 @@ html, body {
   font-size: inherit;
   background: none;
   padding: 0;
+}
+
+#contents img {
+  max-width: 100%;
 }
     </style>
     <script type="text/javascript">
@@ -126,9 +124,8 @@ function connect() {
   ws.onmessage = function(msg) {
     var data = JSON.parse(msg.data);
 		document.title = data.title;
-    document.getElementById('header').innerHTML = data.title;
     document.getElementById('contents').innerHTML = data.contents;
-    log('good', 'Connected; last update on ' + new Date(data.received_at) + '.');
+    log('good', 'Connected to ' + data.title + '; last update on ' + new Date(data.received_at) + '.');
   };
   ws.onclose = function(e) {
     log('bad', 'Lost connection; will reconnect in 1s...');
@@ -148,10 +145,8 @@ window.onload = connect;
   </head>
   <body>
     <div id="box">
-      <h1 id="header">
-      </h1>
-      <p id="status"></p>
       <div id="contents"></div>
+      <p id="status"></p>
     </div>
   </body>
 </html>
