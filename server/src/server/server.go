@@ -16,12 +16,13 @@ import (
 
 type message struct {
 	Title      string    `json:"title"`
+	Path       string    `json:"path"`
 	Contents   string    `json:"contents"`
 	ReceivedAt time.Time `json:"received_at"`
 }
 
 var c = make(chan message)
-var data = message{"autopreview", "Welcome to autopreview!", time.Now()}
+var data = message{"autopreview", "", "Welcome to autopreview!", time.Now()}
 
 func send(ws *websocket.Conn, data message) error {
 	return websocket.JSON.Send(ws, data)
@@ -86,9 +87,19 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type RelativeFileSystem struct {
+	base *string
+}
+
+func (rfs RelativeFileSystem) Open(name string) (http.File, error) {
+	return http.Dir(*rfs.base).Open(name)
+}
+
 func main() {
 	http.HandleFunc("/", handle)
 	http.Handle("/api", websocket.Handler(socket))
+	http.Handle("/static/", http.StripPrefix("/static/",
+		http.FileServer(RelativeFileSystem{&data.Path})))
 	log.Println("Serving at http://localhost:5555/ ...")
 	log.Fatal(http.ListenAndServe("localhost:5555", nil))
 }

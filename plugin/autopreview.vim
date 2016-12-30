@@ -37,6 +37,7 @@ function! s:refresh()
   let bufnr = expand('<bufnr>')
   let data = {
         \ 'title': expand('%:t'),
+        \ 'path': expand('%:h'),
         \ 'contents': join(getbufline(bufnr, 1, "$"), "\n"),
         \ 'type': &filetype
         \ }
